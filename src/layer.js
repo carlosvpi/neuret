@@ -1,16 +1,14 @@
 var NeuralNetwork = require('./neural_network');
 var prototype = require('./feed_forward/prototype');
 var copyArray = require('../util/copy_array');
+var generateArray = require('../util/generate_array');
 
-function run(input) {
-	if (input) {
-		copyArray(input, this.outputLayer);
-	}
-	return this.outputLayer;
+function zero() {
+	return 0;
 }
 
 module.exports = function Layer(size, inputFormat, outputFormat) {
-	const layer = Array(size);
+	const layer = generateArray(size, zero);
 
 	return NeuralNetwork({
 		inputLayer: layer,
@@ -21,8 +19,4 @@ module.exports = function Layer(size, inputFormat, outputFormat) {
 		next: null,
 		weights: null
 	}, prototype);
-
-	NeuralNetwork.__proto__.run = run.bind(NeuralNetwork);
-
-	return NeuralNetwork;
 };

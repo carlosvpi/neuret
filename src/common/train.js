@@ -1,4 +1,5 @@
-var squareError = require('../../util/square_error');
+const squareError = require('../../util/square_error');
+const functionConstructor = Function.constructor;
 
 module.exports = function train(samples, threshold, alpha, callback) {
 	var output;
@@ -15,14 +16,14 @@ module.exports = function train(samples, threshold, alpha, callback) {
 		totalError = 0;
 
 		for (var i = 0, li = samples.length; i < li; i++) {
-			output = this(samples[i].input);
+			output = this.run(samples[i].input);
 			errorPair = squareError(output, samples[i].target);
 			totalError += errorPair.totalError;
 			this.backpropagation(errorPair.errorArray, alpha, callback);
 		}
 
-		if (++iterations % 100000 === 0) {
-			console.log((Date.now() - startTime) / 1000, totalError - threshold);
+		if (callback && callback.constructor === functionConstructor) {
+			callback.call(this, totalError, startTime, ++iterations, threshold)
 		}
 	} while(totalError > threshold);
 	return totalError;

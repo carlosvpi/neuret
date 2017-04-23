@@ -1,6 +1,6 @@
 var NeuralNetwork = require('../neural_network');
-var prototype = require('../feed_forward/prototype');
-var getOrElse = require('../util/get_or_else');
+var getOrElse = require('../../util/get_or_else');
+var generateArray = require('../../util/generate_array');
 
 module.exports = function concat(nextNeuralNetwork, weights) {
 	return NeuralNetwork({
@@ -10,10 +10,10 @@ module.exports = function concat(nextNeuralNetwork, weights) {
 		outputFormat: nextNeuralNetwork.outputFormat,
 		previous: this,
 		next: nextNeuralNetwork,
-		weights: map(Array(this.outputLayer.length + 1), function(d, i) {
-			return map(Array(nextNeuralNetwork.inputLayer.length), function(e, j) {
+		weights: generateArray(this.outputLayer.length + 1, function(d, i) {
+			return generateArray(nextNeuralNetwork.inputLayer.length, function(e, j) {
 				return getOrElse([i, j], weights, Math.random() * 2 - 1);
 			});
-		});
-	}, prototype);
+		})
+	}, require('../feed_forward/prototype'));
 };
